@@ -22,4 +22,18 @@ defmodule Chat.Protocol do
   end
 
   defp decode_broadcast(<<_::binary>>), do: :incomplete
+
+  def encode_message(message)
+
+  def encode_message(%Register{} = msg) do
+    [0x01, encode_string(msg.username)]
+  end
+
+  def encode_message(%Broadcast{} = msg) do
+    [0x02, encode_string(msg.from_username), encode_string(msg.contents)]
+  end
+
+  defp encode_string(str) do
+    [<<byte_size(str)::16>>, str]
+  end
 end
