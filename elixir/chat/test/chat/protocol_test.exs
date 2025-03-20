@@ -1,4 +1,4 @@
-defmodule Chat.ProtoclTest do
+defmodule Chat.ProtocolTest do
   use ExUnit.Case, async: true
 
   alias Chat.Message.{Broadcast, Register}

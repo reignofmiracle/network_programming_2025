@@ -3,6 +3,10 @@ defmodule Chat.Acceptor do
 
   require Logger
 
+  def start_link(options) do
+    GenServer.start_link(__MODULE__, options)
+  end
+
   defstruct [:listen_socket, :supervisor]
 
   @impl true

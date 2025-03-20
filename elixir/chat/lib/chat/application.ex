@@ -7,7 +7,7 @@ defmodule Chat.Application do
       {Chat.Acceptor, port: 4000}
     ]
 
-    opts = [strategy: :temporary, name: Chat.Supervisor]
+    opts = [strategy: :one_for_one, name: Chat.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

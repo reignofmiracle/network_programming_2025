@@ -1,6 +1,10 @@
 defmodule Chat.Connection do
   use GenServer, restart: :temporary
 
+  alias Chat.Message.{Register, Broadcast}
+
+  require Logger
+
   def start_link(socket) do
     GenServer.start_link(__MODULE__, socket)
   end
@@ -41,5 +45,17 @@ defmodule Chat.Connection do
         Logger.error("Received invalid data, closing connection")
         {:stop, :normal, state}
     end
+  end
+
+  defp handle_message(
+         %Register{username: username},
+         %__MODULE__{username: nil} = state
+       ) do
+    {:ok, put_in(state.username, username)}
+  end
+
+  defp handle_message(%Register{}, _state) do
+    Logger.error("Invalid Register message, had already received one")
+    :error
   end
 end
