@@ -6,6 +6,7 @@ defmodule Chat.Connection do
 
   require Logger
 
+  @spec start_link(:gen_tcp.socket()) :: GenServer.on_start()
   def start_link(socket) do
     GenServer.start_link(__MODULE__, socket)
   end
@@ -83,6 +84,10 @@ defmodule Chat.Connection do
     :error
   end
 
+  defp handle_message(%Broadcast{}, %__MODULE__{username: nil}) do
+    Logger.error("Invalid Broadcast message, had not received a Register")
+  end
+
   defp handle_message(%Broadcast{} = message, state) do
     sender = self()
     message = %Broadcast{message | from_username: state.username}
@@ -94,5 +99,7 @@ defmodule Chat.Connection do
         end
       end)
     end)
+
+    {:ok, state}
   end
 end

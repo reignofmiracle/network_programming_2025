@@ -6,8 +6,7 @@ defmodule Mix.Tasks.ChatClient do
   alias Chat.Message.{Broadcast, Register}
 
   def run([] = _args) do
-    {:ok, socket} =
-      :gen_tcp.connect(~c"localhost", 4000, [:binary, active: :once])
+    {:ok, socket} = :gen_tcp.connect(~c"localhost", 4000, [:binary, active: :once])
 
     user = Mix.shell().prompt("Enter your username:") |> String.trim()
 
@@ -17,11 +16,12 @@ defmodule Mix.Tasks.ChatClient do
   end
 
   defp spawn_prompt_task(username) do
-    Task.async(fn -> Mix.shell().prompt("#{username}#") end)
+    Task.async(fn -> Mix.shell().prompt("#{username}# ") end)
   end
 
   defp receive_loop(username, socket, %Task{ref: ref} = prompt_task) do
     receive do
+      # Task result, which is the contents of the message typed by the user.
       {^ref, message} ->
         broadcast = %Broadcast{from_username: username, contents: message}
         :ok = :gen_tcp.send(socket, encode_message(broadcast))

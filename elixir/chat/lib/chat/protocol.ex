@@ -3,6 +3,7 @@ defmodule Chat.Protocol do
 
   @type message() :: Register.t() | Broadcast.t()
 
+  @spec decode_message(binary()) :: {:ok, message(), binary()} | :error | :incomplete
   def decode_message(<<0x01, rest::binary>>), do: decode_register(rest)
   def decode_message(<<0x02, rest::binary>>), do: decode_broadcast(rest)
   def decode_message(<<>>), do: :incomplete
@@ -23,6 +24,7 @@ defmodule Chat.Protocol do
 
   defp decode_broadcast(<<_::binary>>), do: :incomplete
 
+  @spec encode_message(message()) :: iodata()
   def encode_message(message)
 
   def encode_message(%Register{} = msg) do
